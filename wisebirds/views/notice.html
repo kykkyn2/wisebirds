@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>node.js</title>
+</head>
+<body>
+
+	<h1>공지사항</h1>
+	
+	<form action="">
+		<textarea id="message" name="message"></textarea>
+		<input type="submit" value="전송">
+        <input id="password" type="password" name="password" placeholder="password">
+	</form>
+
+	<script src="https://cdn.socket.io/socket.io-1.3.4.js"></script>
+	<script src="https://code.jquery.com/jquery-2.1.3.min.js"></script>
+	<script type="text/javascript">
+		var socket = io.connect('http://104.236.137.18:58080/');
+
+		$('form').submit(function() {
+			var form_data = {
+				message : $("#message").val(),
+				password : $("#password").val()
+			};
+			socket.emit('notice message', form_data);
+			$('#message, #password').val('');
+			return false;
+		});
+
+		socket.on('notice message', function(data) {
+			var dim = '<div id="k_dim" class="popup-dim-overlay" style="width:100%;height:1288px; z-index:9999; background-color:#000; position:fixed; opacity:0.2; left:0; top:0;"></div>';
+			dim += '<a id="k_message" href="javascript:k_removeDim();" style="position:absolute; top:50%; left:50%; z-index:99999;">'+data.message+'</a>';
+			$('body').append(dim);
+		});
+		var k_removeDim = function(){
+			$("#k_dim, #k_message").remove();
+		}
+		// https://mothereff.in/html-entities 이 사이트에서 소스코드 인코딩함
+	</script>
+	
+</body>
+</html>
